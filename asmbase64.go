@@ -25,9 +25,9 @@ type asmEncoder struct {
 }
 
 func (e asmEncoder) AppendEncode(dst, src []byte) []byte {
-	n := e.Encoding.EncodedLen(len(src))
+	n := e.EncodedLen(len(src))
 	dst = slices.Grow(dst, n)
-	e.Encoding.Encode(dst[len(dst):][:n], src)
+	e.Encode(dst[len(dst):][:n], src)
 	return dst[:len(dst)+n]
 }
 
