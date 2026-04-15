@@ -4,6 +4,17 @@
 // encoding/base64 implementation with github.com/segmentio/asm/base64:
 //
 //	import _ "github.com/jwx-go/asmbase64/v4"
+//
+// # Process-global side effect
+//
+// This replacement is process-global. The init function calls
+// jwx.SetBase64Encoder and jwx.SetBase64Decoder, which swap the backend used
+// by every JWS, JWE, JWK, and JWT operation in the entire process, including
+// code paths owned by other packages or third-party libraries that
+// transitively depend on jwx. Import this package from main or a top-level
+// package so the side effect is visible at the binary boundary; importing it
+// from a leaf library silently changes behavior for every jwx caller in the
+// program.
 package asmbase64
 
 import (
