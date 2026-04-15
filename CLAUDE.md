@@ -35,6 +35,8 @@ GOEXPERIMENT=jsonv2 go test ./...
 |------|---------|
 | `asmbase64.go` | Package doc, encoder/decoder types, `init()` registration, encoding detection |
 | `asmbase64_test.go` | JWK and JWS round-trip tests |
+| `appendencode_test.go` | Unit + fuzz coverage for `asmEncoder.AppendEncode` |
+| `fuzz_test.go` | JWS sign/verify and JWK round-trip fuzz targets |
 
 ## Branch Policy
 
