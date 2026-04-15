@@ -12,6 +12,8 @@ go get github.com/jwx-go/asmbase64/v4
 
 ## Usage
 
+> **Process-global side effect.** Importing this package replaces the base64 backend for the entire process via `jwx.SetBase64Encoder` and `jwx.SetBase64Decoder`. Every JWS, JWE, JWK, and JWT operation in the binary — including code paths owned by other packages that also use jwx — will use the asm backend. Import from `main` or a top-level package, not from a leaf library, so the swap is visible at the binary boundary.
+
 Import this package to activate the optimized base64 backend:
 
 ```go
