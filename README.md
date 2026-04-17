@@ -12,7 +12,7 @@ go get github.com/jwx-go/asmbase64/v4
 
 ## Usage
 
-> **Process-global side effect.** Importing this package replaces the base64 backend for the entire process via `jwx.SetBase64Encoder` and `jwx.SetBase64Decoder`. Every JWS, JWE, JWK, and JWT operation in the binary — including code paths owned by other packages that also use jwx — will use the asm backend. Import from `main` or a top-level package, not from a leaf library, so the swap is visible at the binary boundary.
+> **Process-global side effect.** Importing this package replaces the base64 backend for the entire process via `jwx.Settings(jwx.WithBase64Encoder(...), jwx.WithBase64Decoder(...))`. Every JWS, JWE, JWK, and JWT operation in the binary — including code paths owned by other packages that also use jwx — will use the asm backend. Import from `main` or a top-level package, not from a leaf library, so the swap is visible at the binary boundary.
 
 Import this package to activate the optimized base64 backend:
 
@@ -20,10 +20,10 @@ Import this package to activate the optimized base64 backend:
 import _ "github.com/jwx-go/asmbase64/v4"
 ```
 
-This registers:
+This registers, through `jwx.Settings`:
 
-- **Base64 encoder**: assembly-optimized RawURL encoder via `jwx.SetBase64Encoder()`
-- **Base64 decoder**: assembly-optimized decoder with automatic encoding detection via `jwx.SetBase64Decoder()`
+- **Base64 encoder**: assembly-optimized RawURL encoder via `jwx.WithBase64Encoder()`
+- **Base64 decoder**: assembly-optimized decoder with automatic encoding detection via `jwx.WithBase64Decoder()`
 
 ### JWK round-trip
 

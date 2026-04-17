@@ -8,14 +8,14 @@ It replaces the default `encoding/base64` implementation with `github.com/segmen
 
 ## Architecture
 
-This module registers custom encoder and decoder implementations via `jwx.SetBase64Encoder()` and `jwx.SetBase64Decoder()` in its `init()` function.
+This module registers custom encoder and decoder implementations via `jwx.Settings(jwx.WithBase64Encoder(...), jwx.WithBase64Decoder(...))` in its `init()` function.
 
 ### Registration Points
 
-| JWX Package | Registration Function | Purpose |
-|-------------|----------------------|---------|
-| `jwx` | `SetBase64Encoder()` | Replace default base64 encoder with asm-optimized RawURL encoder |
-| `jwx` | `SetBase64Decoder()` | Replace default base64 decoder with asm-optimized auto-detecting decoder |
+| JWX Package | Registration Option | Purpose |
+|-------------|---------------------|---------|
+| `jwx` | `WithBase64Encoder()` (applied via `Settings`) | Replace default base64 encoder with asm-optimized RawURL encoder |
+| `jwx` | `WithBase64Decoder()` (applied via `Settings`) | Replace default base64 decoder with asm-optimized auto-detecting decoder |
 
 ### Encoding Detection
 
