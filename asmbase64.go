@@ -27,10 +27,12 @@ import (
 )
 
 func init() {
-	jwx.Settings(
+	if err := jwx.Settings(
 		jwx.WithBase64Encoder(asmEncoder{asmbase64.RawURLEncoding}),
 		jwx.WithBase64Decoder(asmDecoder{}),
-	)
+	); err != nil {
+		panic(fmt.Sprintf("asmbase64: failed to register base64 backend: %s", err))
+	}
 }
 
 type asmEncoder struct {
