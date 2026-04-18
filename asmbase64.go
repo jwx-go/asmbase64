@@ -19,7 +19,9 @@ package asmbase64
 
 import (
 	"bytes"
+	stdbase64 "encoding/base64"
 	"fmt"
+	"io"
 	"slices"
 
 	jwx "github.com/lestrrat-go/jwx/v4"
@@ -44,6 +46,18 @@ func (e asmEncoder) AppendEncode(dst, src []byte) []byte {
 	dst = slices.Grow(dst, n)
 	e.Encode(dst[len(dst):][:n], src)
 	return dst[:len(dst)+n]
+}
+
+// NewEncoder satisfies jws.Base64StreamEncoder so that
+// jws.WithDetachedPayloadReader works when asmbase64 is the active
+// encoder. segmentio/asm/base64.Encoding does not expose a streaming
+// encoder, so we delegate to encoding/base64.NewEncoder with
+// RawURLEncoding — the one variant asmbase64 is wired up for here.
+// The asm speedup applies only to the one-shot Encode/AppendEncode
+// paths; streaming writes go through the standard library, trading the
+// SIMD gain for O(1) memory on arbitrarily large payloads.
+func (e asmEncoder) NewEncoder(w io.Writer) io.WriteCloser {
+	return stdbase64.NewEncoder(stdbase64.RawURLEncoding, w)
 }
 
 type asmDecoder struct{}
