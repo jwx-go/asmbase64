@@ -3,7 +3,7 @@ module github.com/jwx-go/asmbase64/v4
 go 1.26.0
 
 require (
-	github.com/lestrrat-go/jwx/v4 v4.0.0-scratch.26.0.20260418082023-34d0e7a04401
+	github.com/lestrrat-go/jwx/v4 v4.0.0-scratch.27
 	github.com/segmentio/asm v1.2.1
 	github.com/stretchr/testify v1.11.1
 )
