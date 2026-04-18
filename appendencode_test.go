@@ -71,6 +71,55 @@ func TestAppendEncodeEmptySrc(t *testing.T) {
 	require.Equal(t, "keep", string(got))
 }
 
+func TestNewEncoderStreaming(t *testing.T) {
+	t.Parallel()
+
+	enc := newTestEncoder()
+
+	// Length 0..300 covers all boundary cases around the 3-byte grouping
+	// that base64 encoders buffer internally. Each length is encoded in
+	// three granularities — one full Write, byte-at-a-time, and a half+
+	// half split — to catch any assumptions about Write() call
+	// boundaries.
+	for n := range 301 {
+		src := make([]byte, n)
+		_, err := rand.Read(src)
+		require.NoError(t, err)
+
+		want := base64.RawURLEncoding.EncodeToString(src)
+
+		// Full buffer in one Write.
+		var full bytes.Buffer
+		wc := enc.NewEncoder(&full)
+		_, err = wc.Write(src)
+		require.NoError(t, err, `n=%d: Write`, n)
+		require.NoError(t, wc.Close(), `n=%d: Close`, n)
+		require.Equal(t, want, full.String(), `n=%d: single-write output`, n)
+
+		// Byte-by-byte — forces the encoder to buffer partial groups.
+		var byByte bytes.Buffer
+		wc = enc.NewEncoder(&byByte)
+		for _, b := range src {
+			_, err = wc.Write([]byte{b})
+			require.NoError(t, err, `n=%d: byte-wise Write`, n)
+		}
+		require.NoError(t, wc.Close(), `n=%d: byte-wise Close`, n)
+		require.Equal(t, want, byByte.String(), `n=%d: byte-wise output`, n)
+
+		// Half-and-half — exercises group-spanning Writes.
+		if n >= 2 {
+			var split bytes.Buffer
+			wc = enc.NewEncoder(&split)
+			_, err = wc.Write(src[:n/2])
+			require.NoError(t, err, `n=%d: split Write(1)`, n)
+			_, err = wc.Write(src[n/2:])
+			require.NoError(t, err, `n=%d: split Write(2)`, n)
+			require.NoError(t, wc.Close(), `n=%d: split Close`, n)
+			require.Equal(t, want, split.String(), `n=%d: split output`, n)
+		}
+	}
+}
+
 func FuzzAppendEncode(f *testing.F) {
 	f.Add([]byte(""))
 	f.Add([]byte("a"))
