@@ -31,7 +31,7 @@ func TestJWKRoundTrip(t *testing.T) {
 	buf, err := json.Marshal(jwkKey)
 	require.NoError(t, err, `json.Marshal should succeed`)
 
-	parsed, err := jwk.ParseKey[jwk.Key](buf)
+	parsed, err := jwk.ParseKeyAs[jwk.Key](buf)
 	require.NoError(t, err, `jwk.ParseKey should succeed`)
 
 	// Verify the key fields survived the round-trip through asm base64
