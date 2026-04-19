@@ -1,6 +1,9 @@
 Changes
 =======
 
+v4.0.0 19 Apr 2026
+  * First stable v4 release. Tracks github.com/lestrrat-go/jwx/v4 v4.0.0.
+
 v4.0.0-alpha4 17 Apr 2026
   * Switch registration to jwx.Settings(jwx.WithBase64Encoder(...), jwx.WithBase64Decoder(...)).
     Requires jwx/v4 v4.0.0-scratch.23 or later, which removed jwx.SetBase64Encoder /
